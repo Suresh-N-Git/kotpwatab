@@ -1,0 +1,53 @@
+.row.w-100 {
+  padding: 0 12px;
+  margin: 0;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.roundedwithboxshadow {
+  background: #4a90e2;
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  color: #fff;
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .outlet-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: space-between; // push buttons to edges
+    align-items: center;
+
+    button {
+      min-width: 100px;
+      font-weight: 500;
+      border-radius: 8px;
+      color: #fff;
+    }
+
+    // override Material default tones for better contrast
+    .mat-primary {
+      background-color: #1976d2;
+    }
+    .mat-accent {
+      background-color: #ff9800;
+    }
+  }
+}
+
+.col-sm-12 {
+  padding-left: 0;
+  padding-right: 0;
+}
