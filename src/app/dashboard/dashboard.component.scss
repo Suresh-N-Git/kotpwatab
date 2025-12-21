@@ -1,7 +1,7 @@
 .row.w-100 {
-  padding: 0 12px;
+  padding: 0 6px;
   margin: 0;
-  gap: 12px;
+  gap: 10px;
   display: flex;
   flex-direction: column;
 }
@@ -10,7 +10,7 @@
   background: #4a90e2;
   border-radius: 16px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  padding: 16px;
+  padding: 6px;
   color: #fff;
 
   .card-content {
@@ -21,7 +21,7 @@
 
   .outlet-name {
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     text-align: center;
   }
 
@@ -31,8 +31,10 @@
     align-items: center;
 
     button {
-      min-width: 100px;
-      font-weight: 500;
+      width: 100%;
+      min-width: 200px;
+      font-size: 1.5rem;
+      font-weight: 400;
       border-radius: 8px;
       color: #fff;
     }
@@ -41,6 +43,7 @@
     .mat-primary {
       background-color: #1976d2;
     }
+
     .mat-accent {
       background-color: #ff9800;
     }

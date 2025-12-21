@@ -19,18 +19,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class DashboardComponent implements OnInit {
 
-
-  outletList: any = [];
+  menuItemsAll: any = [];
+  menuCategories: any = [];
   loginDetails: any;
   subscription: Subscription = new Subscription();
   serverDate: any;
-  showOutletData: boolean = false;
+  showCategories: boolean = false;
+
 
   private lastBack = 0;
   private exitDelay = 2000; // 2 seconds
 
 
-  
+
   constructor(
     private router: Router,
     private location: Location,
@@ -45,16 +46,16 @@ export class DashboardComponent implements OnInit {
     console.log('this.loginDetails ', this.loginDetails)
     let isoSystemDate = (this.loginDetails.SystemDate) ? new Date(this.loginDetails.SystemDate) : new Date();
     this.serverDate = ISODateToyyyyMMdd(isoSystemDate);
-    this.getDashboardDetails();
+    this.menuItemsAll = JSON.parse(sessionStorage.getItem('ssMenuItems'));
 
-    // if (sessionStorage.getItem('ssoutletList')) {
-    //   this.outletList = JSON.parse(sessionStorage.getItem('ssoutletList'));
-    //   if (this.outletList.length > 0) {
-    //     // this.setupDataTable();
-    //   }
-    // } else {
-    //   this.getOutletList();
-    // }
+    if (!this.menuItemsAll) {
+      this.getDashboardDetails();
+    } else {
+      this.menuItemsAll = JSON.parse(sessionStorage.getItem('ssMenuItems'));
+      this.menuCategories = [...new Set(this.menuItemsAll.map(item => item.Category))];
+      console.log('his.menuCategories ', this.menuCategories)
+      this.showCategories = true;
+    }
   }
 
 
@@ -62,24 +63,24 @@ export class DashboardComponent implements OnInit {
 
     let inputJSON =
     {
-      FromApi: "OutletListDashBoard",
-      Pc_GuId: this.loginDetails?.Pc_GuId,
-      Login_Id: this.loginDetails?.Login_Id
+      FromApi: "GetMenuJson"
     };
     console.log('inputJSON', inputJSON)
     this.subscription.add(
-      this.homeService.genericAPI(inputJSON).subscribe({
+      this.homeService.getMenuJson(inputJSON).subscribe({
         next: (res: any) => {
           if (res === null) {
             res = [];
           }
-          this.outletList = res;
-          if (this.outletList.length > 0) {
-            sessionStorage.setItem('ssoutletList', JSON.stringify(this.outletList));
-            console.log('this.outletList ', this.outletList)
-            this.showOutletData = true;
+          this.menuItemsAll = res;
 
-            // this.setupDataTable();
+          if (this.menuItemsAll.length > 0) {
+            sessionStorage.setItem('ssMenuItems', JSON.stringify(this.menuItemsAll));
+
+            this.showCategories = true;
+            this.menuCategories = [...new Set(this.menuItemsAll.map(item => item.Category))];
+
+            console.log('this.menuCategories ', this.menuCategories)
           }
         }, error: (error) => {
           this.sweetAlert.show('Error', error, "error")
@@ -88,14 +89,9 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  outletSelected(element) : void {
 
-    this.sweetAlert.show("Success", JSON.stringify(element), "success")
-    console.group(element)
-  }
-
-  stockList(element) : void {
+  selectedCategory(element): void {
     console.log('element'), element
-    this.router.navigate(['stocks'], { state: { outletId: element.Outlet_Id, outletName : element.Name } });
+    this.router.navigate(['takeorder'], { state: { catetgory: element} });
   }
 }

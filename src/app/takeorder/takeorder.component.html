@@ -1,0 +1,77 @@
+<!-- <mat-card-title class="title">
+    {{this.selCategory}}
+</mat-card-title>
+<div class="row w-100">
+    <div class="col-sm-12" *ngFor="let element of this.menuItemsByCategories">
+        <mat-card class="roundedwithboxshadow">
+            <div class="button-row">
+                {{ element.Description }}
+            </div>
+        </mat-card>
+    </div>
+</div> -->
+
+
+<mat-card-title class="title">
+    {{ selCategory }}
+</mat-card-title>
+
+<form [formGroup]="orderForm">
+    <div class="row w-100" formArrayName="items">
+
+        <div
+            class="col-sm-12"
+            *ngFor="let element of menuItemsByCategories; let i = index">
+
+            <mat-card class="roundedwithboxshadow">
+
+                <!-- Item description -->
+                <div class="button-row mb-2">
+                    {{ element.Description }}
+                </div>
+
+                <!-- Qty + Comment + Button -->
+                <div class="item-row" [formGroupName]="i">
+
+                    <!-- Left stacked inputs -->
+                    <div class="input-column">
+
+                        <!-- Qty -->
+                        <mat-form-field appearance="fill" class="dense-field qty-field">
+                            <mat-label>Qty</mat-label>
+                            <input
+                                matInput
+                                type="number"
+                                min="1"
+                                formControlName="KotQty">
+                            <mat-error>
+                                Quantity required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <!-- Comment BELOW Qty -->
+                        <mat-form-field appearance="fill" class="dense-field comment-field">
+                            <mat-label>Item Comment</mat-label>
+                            <input
+                                matInput
+                                formControlName="ItemComment">
+                        </mat-form-field>
+
+                    </div>
+
+                    <!-- Action button -->
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="addItem(i)"
+                        [disabled]="orderForm.get('items.' + i)?.invalid">
+                        Add
+                    </button>
+
+                </div>
+
+            </mat-card>
+        </div>
+
+    </div>
+</form>
