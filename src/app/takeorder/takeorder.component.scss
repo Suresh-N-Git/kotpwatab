@@ -1,3 +1,14 @@
+
+.title {
+    padding: 0 6px;
+     border-radius: 16px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: large;
+    text-align: center;
+    background-color: yellow;
+}
+
 .item-row {
     display: flex;
     align-items: center;
@@ -30,12 +41,6 @@
         border-radius: 8px;
         color: #fff;
     }
-}
-
-.dense-field .mat-mdc-form-field-infix {
-    padding-top: 4px;
-    padding-bottom: 4px;
-    min-height: 36px;
 }
 
 // .qty-field .mat-mdc-form-field-infix,

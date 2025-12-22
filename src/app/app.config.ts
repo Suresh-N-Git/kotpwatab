@@ -25,10 +25,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     { provide: LOCALE_ID, useValue: 'en-IN' },
 
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline', floatLabel: 'always' }, // Float Labels through out the project
-    },
+    // {
+    //   provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+    //   useValue: { appearance: 'outline', floatLabel: 'always' }, // Float Labels through out the project
+    // },
 
     importProvidersFrom(FormsModule, ReactiveFormsModule, SharedDirectiveModule, BrowserAnimationsModule),
 

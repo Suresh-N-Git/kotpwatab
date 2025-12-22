@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 
 
 @Component({
@@ -25,12 +25,14 @@ export class TakeorderComponent implements OnInit {
   selCategory: string;
   menuItemsAll: any[] = [];
   menuItemsByCategories: any[] = [];
+  filteredMenuItems: any[] = [];
   loginDetails: any;
   subscription: Subscription = new Subscription();
   serverDate: any;
 
   // 🔹 Reactive form root
   orderForm!: FormGroup;
+  searchControl = new FormControl('');
 
   constructor(
     private router: Router,
@@ -39,7 +41,7 @@ export class TakeorderComponent implements OnInit {
     private sweetAlert: SweetalertService,
     private snackBar: MatSnackBar,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit(): void {
 
@@ -58,6 +60,14 @@ export class TakeorderComponent implements OnInit {
 
     this.menuItemsByCategories =
       this.menuItemsAll.filter(item => item.Category === this.selCategory);
+
+    // 🔹 Initial filtered list
+    this.filteredMenuItems = [...this.menuItemsByCategories];
+
+    // 🔹 Search subscription
+    this.searchControl.valueChanges.subscribe(searchText => {
+      this.applySearch(searchText);
+    });
 
     // 🔹 Build reactive form AFTER data is ready
     this.buildForm();
@@ -85,6 +95,14 @@ export class TakeorderComponent implements OnInit {
       ItemComment: [item.ItemComment || '']
     });
   }
+
+  private applySearch(searchText: string): void {
+  const text = (searchText || '').toLowerCase();
+
+  this.filteredMenuItems = this.menuItemsByCategories.filter(item =>
+    item.Description.toLowerCase().includes(text)
+  );
+}
 
   get items(): FormArray {
     return this.orderForm.get('items') as FormArray;

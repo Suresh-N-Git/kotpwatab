@@ -1,70 +1,49 @@
-<!-- <mat-card-title class="title">
-    {{this.selCategory}}
-</mat-card-title>
-<div class="row w-100">
-    <div class="col-sm-12" *ngFor="let element of this.menuItemsByCategories">
-        <mat-card class="roundedwithboxshadow">
-            <div class="button-row">
-                {{ element.Description }}
-            </div>
-        </mat-card>
-    </div>
-</div> -->
-
-
 <mat-card-title class="title">
     {{ selCategory }}
 </mat-card-title>
 
+<!-- 🔍 Search bar -->
+<mat-form-field appearance="fill" class="search-field w-100">
+    <mat-label>Search items</mat-label>
+    <input matInput type="text" [formControl]="searchControl" placeholder="Type to search">
+</mat-form-field>
 <form [formGroup]="orderForm">
     <div class="row w-100" formArrayName="items">
 
-        <div
-            class="col-sm-12"
-            *ngFor="let element of menuItemsByCategories; let i = index">
+        <div class="col-sm-12" *ngFor="let element of filteredMenuItems; let i = index">
 
             <mat-card class="roundedwithboxshadow">
 
                 <!-- Item description -->
-                <div class="button-row mb-2">
+                <div class="button-row mb-2" style="background-color: aqua;">
                     {{ element.Description }}
                 </div>
 
                 <!-- Qty + Comment + Button -->
-                <div class="item-row" [formGroupName]="i">
+                <div class="item-row" [formGroupName]="i" style="margin-top: 10px;">
 
                     <!-- Left stacked inputs -->
                     <div class="input-column">
 
                         <!-- Qty -->
-                        <mat-form-field appearance="fill" class="dense-field qty-field">
+                        <mat-form-field style="margin-top: -17px;">
                             <mat-label>Qty</mat-label>
-                            <input
-                                matInput
-                                type="number"
-                                min="1"
-                                formControlName="KotQty">
+                            <input matInput type="number" min="1" formControlName="KotQty">
                             <mat-error>
                                 Quantity required
                             </mat-error>
                         </mat-form-field>
 
-                        <!-- Comment BELOW Qty -->
-                        <mat-form-field appearance="fill" class="dense-field comment-field">
+
+                        <mat-form-field style="margin-top: -17px;">
                             <mat-label>Item Comment</mat-label>
-                            <input
-                                matInput
-                                formControlName="ItemComment">
+                            <input matInput formControlName="ItemComment">
                         </mat-form-field>
 
                     </div>
 
                     <!-- Action button -->
-                    <button
-                        mat-raised-button
-                        color="primary"
-                        (click)="addItem(i)"
-                        [disabled]="orderForm.get('items.' + i)?.invalid">
+                    <button mat-raised-button color="primary" (click)="addItem(i)" [disabled]="items.at(i).invalid">
                         Add
                     </button>
 
