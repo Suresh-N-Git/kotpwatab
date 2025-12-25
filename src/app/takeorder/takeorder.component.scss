@@ -1,14 +1,4 @@
 
-.title {
-    padding: 0 6px;
-     border-radius: 16px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: large;
-    text-align: center;
-    background-color: yellow;
-}
-
 .item-row {
     display: flex;
     align-items: center;
@@ -27,19 +17,26 @@
     white-space: nowrap;
 }
 
+.roundedwithboxshadow {
+    background: #b6d4f6;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    padding: 6px;
+    color: black;
 
-.button-row {
-    display: flex;
-    justify-content: space-between; // push buttons to edges
-    align-items: center;
+    .button-row {
+        display: flex;
+        justify-content: space-between; // push buttons to edges
+        align-items: center;
 
-    button {
-        width: 100%;
-        min-width: 200px;
-        font-size: 1.5rem;
-        font-weight: 400;
-        border-radius: 8px;
-        color: #fff;
+        button {
+            width: 100%;
+            min-width: 200px;
+            font-size: 1.5rem;
+            font-weight: 400;
+            border-radius: 8px;
+            color: #fff;
+        }
     }
 }
 

@@ -1,1 +1,43 @@
-<p>uploadkot works!</p>
+<mat-card-title class="title" style="margin-top: 20px;">
+    Upload KoT
+</mat-card-title>
+
+<mat-card class="mt-3">
+    <mat-card-title>Ordered Items</mat-card-title>
+
+    <div *ngIf="orderedItems.length === 0" class="text-muted">
+        No items added
+    </div>
+
+    <div class="roundedwithboxshadow"  style="margin-bottom: 10px;" *ngFor="let item of orderedItems; trackBy: trackByPmId">
+        <!-- Description -->
+        <div class="item-desc">
+            {{ item.Description }}
+        </div>
+
+
+        <!-- Qty -->
+        <mat-form-field class="qty-field">
+            <input matInput type="text" inputmode="numeric" nosOnly [value]="item.KotQty"
+                (blur)="onQtyChange(item, $event)" />
+        </mat-form-field>
+
+        <!-- Item Comment -->
+        <mat-form-field class="comment-field">
+            <input matInput type="text" placeholder="Comment" [value]="item.ItemComment"
+                (blur)="onCommentChange(item, $event)" />
+        </mat-form-field>
+
+
+        <!-- Optional remove button -->
+        <button mat-icon-button color="warn" (click)="confirmRemoveItem(item)">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+</mat-card>
+
+<!-- Upload button -->
+<button mat-raised-button color="primary" class="mt-3 w-100" [disabled]="orderedItems.length === 0"
+    (click)="uploadKot()">
+    Upload Order
+</button>

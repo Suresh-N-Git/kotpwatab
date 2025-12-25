@@ -92,14 +92,24 @@ export class DashboardComponent implements OnInit {
 
   selectedCategory(element): void {
     console.log('element'), element
-    this.router.navigate(['takeorder'], { state: { catetgory: element} });
+    this.router.navigate(['takeorder'], { state: { catetgory: element } });
   }
 
-  openUploadKot() : void {
-    this.router.navigate(['uploadkot']);
+  openUploadKot(): void {
+
+    const orderedItems = JSON.parse(sessionStorage.getItem('ssOrderedItems') || '[]');
+
+    console.log('orderedItems' , orderedItems)
+    if (orderedItems.length === 0) {
+      this.sweetAlert.show('error', 'No KoT Items To Upload', 'error');
+    } else {
+      this.router.navigate(['uploadkot']);
+    }
+
+
   }
 
-  openViewAllKot() : void {
+  openViewAllKot(): void {
     this.router.navigate(['viewallkot']);
   }
 }

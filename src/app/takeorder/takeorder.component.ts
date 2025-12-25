@@ -58,6 +58,7 @@ export class TakeorderComponent implements OnInit {
       : new Date();
 
     this.serverDate = ISODateToyyyyMMdd(isoSystemDate);
+    this.orderedItems = JSON.parse(sessionStorage.getItem('ssOrderedItems') || '[]');
 
     this.menuItemsAll = JSON.parse(sessionStorage.getItem('ssMenuItems') || '[]');
 
