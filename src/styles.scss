@@ -15,8 +15,8 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
-// /* Remove grey background from mat-form-field fill */
-// .mat-mdc-form-field.mat-form-field-appearance-fill
-//   .mdc-text-field--filled {
-//     background-color: transparent !important;
-// }
+/* Remove grey background from mat-form-field fill */
+.mat-mdc-form-field.mat-form-field-appearance-fill
+  .mdc-text-field--filled {
+    background-color: transparent !important;
+}

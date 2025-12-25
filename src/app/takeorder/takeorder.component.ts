@@ -9,12 +9,14 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import { SharedDirectiveModule } from "../SharedDirectivesModule";
+
 
 
 @Component({
   selector: 'app-takeorder',
   standalone: true,
-  imports: [CommonModule, SharedMaterialModule],
+  imports: [CommonModule, SharedMaterialModule, SharedDirectiveModule],
   templateUrl: './takeorder.component.html',
   styleUrl: './takeorder.component.scss'
 })
@@ -30,6 +32,7 @@ export class TakeorderComponent implements OnInit {
   subscription: Subscription = new Subscription();
   serverDate: any;
 
+  orderedItems: any[] = [];
   // 🔹 Reactive form root
   orderForm!: FormGroup;
   searchControl = new FormControl('');
@@ -97,12 +100,12 @@ export class TakeorderComponent implements OnInit {
   }
 
   private applySearch(searchText: string): void {
-  const text = (searchText || '').toLowerCase();
+    const text = (searchText || '').toLowerCase();
 
-  this.filteredMenuItems = this.menuItemsByCategories.filter(item =>
-    item.Description.toLowerCase().includes(text)
-  );
-}
+    this.filteredMenuItems = this.menuItemsByCategories.filter(item =>
+      item.Description.toLowerCase().includes(text)
+    );
+  }
 
   get items(): FormArray {
     return this.orderForm.get('items') as FormArray;
@@ -112,70 +115,63 @@ export class TakeorderComponent implements OnInit {
   // Action
   // -------------------------------------------------------
 
-  addItem(index: number): void {
+  addItem(index: number, element: any): void {
     const formValue = this.items.at(index).value;
-    console.log('Selected Item:', formValue);
+
+    if (!formValue.KotQty) {
+      this.sweetAlert.show('error', 'Qty Required', 'error');
+      return;
+    }
+
+    // 1️⃣ Capture pmid BEFORE doing anything else
+    const pmid = element.Pm_Id;
+
+    // 2️⃣ Remove ONLY the matching item
+    if (pmid !== undefined && pmid !== null) {
+      this.orderedItems = this.orderedItems.filter(
+        item => item.Pm_Id !== pmid
+      );
+    }
+    this.orderedItems = [...this.orderedItems]
+
+
+    if (formValue.KotQty != 0) {
+      // 3️⃣ Create the new item // this allows for deleting the ordered item by entering 0 qty
+      const newItem = {
+        ...element,
+        KotQty: formValue.KotQty,
+        ItemComment: formValue.ItemComment
+      };
+
+      // 5️⃣ Add the new version
+      this.orderedItems.push(newItem);
+
+    }
+
+    console.log('orderedItems', this.orderedItems);
   }
+
+
+  // addItem(index: number, element: any): void {
+  //   const formValue = this.items.at(index).value;
+  //   if (!formValue.KotQty || formValue.KotQty === 0) {
+  //     this.sweetAlert.show('error', 'Qty Required', 'error')
+  //   }
+
+  //   element.KotQty = formValue.KotQty;
+  //   element.ItemComment = formValue.ItemComment
+
+  //   // console.log('Selected Item:', formValue);
+  //   // console.log('Selected element:', element);
+
+  //   if (this.orderedItems.length === 0) {
+  //     this.orderedItems.unshift(element)
+  //   } else {
+
+
+  //     this.orderedItems.push(element)
+  //   }
+
+  //   console.log('this.orderedItems.length', this.orderedItems)
+  // }
 }
-
-
-// import { Component, HostListener, OnInit } from '@angular/core';
-// import { ISODateToyyyyMMdd } from '../core/common-functions';
-// import { Subject, Subscription } from 'rxjs';
-// import { HomeService } from '../homeservice/home.service';
-// import { SweetalertService } from '../sweetalert/sweetalert.service';
-// import { SharedMaterialModule } from '../SharedMaterialModule';
-// import { CommonModule } from '@angular/common';
-// import { Router } from '@angular/router';
-// import { Location } from '@angular/common';
-// import { MatSnackBar } from '@angular/material/snack-bar';
-// import { FormGroup } from '@angular/forms';
-
-// @Component({
-//   selector: 'app-takeorder',
-//   standalone: true,
-//   imports: [CommonModule, SharedMaterialModule],
-//   templateUrl: './takeorder.component.html',
-//   styleUrl: './takeorder.component.scss'
-// })
-// export class TakeorderComponent implements OnInit {
-
-//   selCategory: string;
-//   menuItemsAll: any = [];
-//   menuItemsByCategories: any = [];
-//   loginDetails: any;
-//   subscription: Subscription = new Subscription();
-//   serverDate: any;
-
-
-//   constructor(
-//     private router: Router,
-//     private location: Location,
-//     private homeService: HomeService,
-//     public sweetAlert: SweetalertService,
-//     private snackBar: MatSnackBar
-//   ) { }
-
-//   ngOnInit(): void {
-
-//     orderForm: FormGroup;
-
-//     const state = history.state;
-//     this.selCategory = state?.catetgory ?? '';
-//     this.loginDetails = JSON.parse(sessionStorage.getItem('ssLoginDetails'));
-//     console.log('this.selCategory ', this.selCategory)
-//     let isoSystemDate = (this.loginDetails.SystemDate) ? new Date(this.loginDetails.SystemDate) : new Date();
-//     this.serverDate = ISODateToyyyyMMdd(isoSystemDate);
-//     this.menuItemsByCategories = JSON.parse(sessionStorage.getItem('ssMenuItems'));
-
-//     this.menuItemsAll = JSON.parse(sessionStorage.getItem('ssMenuItems'));
-//     this.menuItemsByCategories = this.menuItemsAll.filter(item => item.Category === this.selCategory)
-//     console.log('his.menuCategories ', this.menuItemsByCategories)
-
-//   }
-
-//   addItem(element) : void {
-//     console.log(element)
-
-//   }
-// }

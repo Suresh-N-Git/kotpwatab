@@ -26,7 +26,7 @@ export class AppDirective {
   selector: '[appRemoveAriaHidden]'
 })
 export class RemoveAriaHiddenDirective implements AfterViewInit {
-  constructor(private el: ElementRef) {}
+  constructor(private el: ElementRef) { }
 
   ngAfterViewInit() {
     this.el.nativeElement.setAttribute('aria-hidden', 'false');
@@ -121,17 +121,39 @@ export class DirNosOnly implements OnInit {
   }
 
 
-  @HostListener("focusout", ["$event.target.value"])
-  onblur(value: string) {
-    const trimmedValue = value.trim();
-    const finalValue = parseFloat(trimmedValue) === 0 ? '0' : trimmedValue;
+  @HostListener('focusout', ['$event'])
+  onBlur(event: FocusEvent) {
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
 
+    const rawValue = input.value;
+    const trimmedValue = rawValue.trim();
+
+    // 1️⃣ If empty, leave it empty
+    if (trimmedValue === '') {
+      this.updateValue('');
+      return;
+    }
+
+    // 2️⃣ Normalize explicit zero values only
+    if (/^0+$/.test(trimmedValue)) {
+      this.updateValue('0');
+      return;
+    }
+
+    // 3️⃣ Otherwise, keep what user entered
+    this.updateValue(trimmedValue);
+  }
+
+  private updateValue(value: string) {
     if (this.ngControl?.control) {
-      this.ngControl.control.patchValue(finalValue);
+      this.ngControl.control.patchValue(value, { emitEvent: false });
     } else {
-      this.el.nativeElement.value = finalValue;
+      (this.el.nativeElement as HTMLInputElement).value = value;
     }
   }
+
+
 }
 // End of Numbers Only
 
