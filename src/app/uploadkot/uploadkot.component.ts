@@ -163,13 +163,13 @@ export class UploadkotComponent implements OnInit {
           }
           this.orderedItems = [];
           sessionStorage.removeItem('ssOrderedItems');
-         
+
           this.txtTableNo.setValue(null);
           this.txtServicedBy.setValue(null);
 
           console.log('res', res)
-          this.sweetAlert.show('Success', res['ReturnMessage'], 'success')
-
+          this.router.navigate(['dashboard']);
+          this.sweetAlert.show('Success', res['Uploaded'], 'success')
         }, error: (error) => {
           this.sweetAlert.show('Error', error, "error")
         }
