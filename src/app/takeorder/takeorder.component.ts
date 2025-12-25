@@ -116,9 +116,11 @@ export class TakeorderComponent implements OnInit {
   // -------------------------------------------------------
 
   addItem(index: number, element: any): void {
-    const formValue = this.items.at(index).value;
+    const formGroup = this.items.at(index);
+    // const formValue = this.items.at(index).value;
+    const formValue = formGroup.value;
 
-    if (!formValue.KotQty) {
+    if (formValue.KotQty === null || formValue.KotQty === undefined) {
       this.sweetAlert.show('error', 'Qty Required', 'error');
       return;
     }
@@ -126,52 +128,103 @@ export class TakeorderComponent implements OnInit {
     // 1️⃣ Capture pmid BEFORE doing anything else
     const pmid = element.Pm_Id;
 
-    // 2️⃣ Remove ONLY the matching item
-    if (pmid !== undefined && pmid !== null) {
-      this.orderedItems = this.orderedItems.filter(
-        item => item.Pm_Id !== pmid
-      );
-    }
-    this.orderedItems = [...this.orderedItems]
+    // Capture previous qty BEFORE doing anything
+    const previousItem = this.orderedItems.find(i => i.Pm_Id === pmid);
+    const previousQty = previousItem?.KotQty ?? null;
 
+  
+    if (formValue.KotQty == 0) {
+        // -------- QTY = 0 FLOW --------
+      this.sweetAlert.confirm('Proceed ?', element.Description + ' Will Be Cancelled?')
+        .then(res => {
+          if (res.isConfirmed) {
 
-    if (formValue.KotQty != 0) {
-      // 3️⃣ Create the new item // this allows for deleting the ordered item by entering 0 qty
+            // Remove ONLY this item
+            this.orderedItems = this.orderedItems.filter(
+              item => item.Pm_Id !== pmid
+            );
+
+            // 🔑 Reset form qty to null
+            formGroup.patchValue({ KotQty: null });
+
+          } else {
+            // 🔑 Restore previous qty
+            formGroup.patchValue({ KotQty: previousQty });
+          }
+          // Trigger change detection safely
+          this.orderedItems = [...this.orderedItems];
+          console.log('orderedItems', this.orderedItems);
+          sessionStorage.setItem('ssOrderedItems', JSON.stringify(this.orderedItems));
+        });
+
+      return;
+    } 
+    else {
+      // -------- NORMAL ADD / UPDATE FLOW --------
+      // 2️⃣ Remove ONLY the matching item
+      if (pmid !== undefined && pmid !== null) {
+        this.orderedItems = this.orderedItems.filter(
+          item => item.Pm_Id !== pmid
+        );
+      }
+      this.orderedItems = [...this.orderedItems]
       const newItem = {
         ...element,
         KotQty: formValue.KotQty,
         ItemComment: formValue.ItemComment
       };
-
       // 5️⃣ Add the new version
       this.orderedItems.push(newItem);
-
+      this.orderedItems = [...this.orderedItems];
+      sessionStorage.setItem('ssOrderedItems', JSON.stringify(this.orderedItems));
     }
-
     console.log('orderedItems', this.orderedItems);
   }
-
-
-  // addItem(index: number, element: any): void {
-  //   const formValue = this.items.at(index).value;
-  //   if (!formValue.KotQty || formValue.KotQty === 0) {
-  //     this.sweetAlert.show('error', 'Qty Required', 'error')
-  //   }
-
-  //   element.KotQty = formValue.KotQty;
-  //   element.ItemComment = formValue.ItemComment
-
-  //   // console.log('Selected Item:', formValue);
-  //   // console.log('Selected element:', element);
-
-  //   if (this.orderedItems.length === 0) {
-  //     this.orderedItems.unshift(element)
-  //   } else {
-
-
-  //     this.orderedItems.push(element)
-  //   }
-
-  //   console.log('this.orderedItems.length', this.orderedItems)
-  // }
 }
+
+// addItem(index: number, element: any): void {
+//   const formValue = this.items.at(index).value;
+//   if (!formValue.KotQty || formValue.KotQty === 0) {
+//     this.sweetAlert.show('error', 'Qty Required', 'error')
+//   }
+
+//   element.KotQty = formValue.KotQty;
+//   element.ItemComment = formValue.ItemComment
+
+//   // console.log('Selected Item:', formValue);
+//   // console.log('Selected element:', element);
+
+//   if (this.orderedItems.length === 0) {
+//     this.orderedItems.unshift(element)
+//   } else {
+
+
+//     this.orderedItems.push(element)
+//   }
+
+//   console.log('this.orderedItems.length', this.orderedItems)
+// }
+
+
+
+
+// if (formValue.KotQty == 0) {
+//   this.sweetAlert.confirm('Proceed ?', '0 Qty Item Will Be Removed?')
+//     .then(res => {
+//       if (res.isConfirmed) {
+//         // 2️⃣ Remove ONLY the matching item
+//         if (pmid !== undefined && pmid !== null) {
+//           this.orderedItems = this.orderedItems.filter(
+//             item => item.Pm_Id !== pmid
+//           );
+//         }
+//         this.orderedItems = [...this.orderedItems]
+//         console.log('After deletion  orderedItems', this.orderedItems);
+//         return;
+//         // this.sweetAlert.show('Confirmed', 'Action executed successfully!', 'success');
+//       } else {
+
+//         return;
+//       }
+//     });
+// } 
