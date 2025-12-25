@@ -94,4 +94,12 @@ export class DashboardComponent implements OnInit {
     console.log('element'), element
     this.router.navigate(['takeorder'], { state: { catetgory: element} });
   }
+
+  openUploadKot() : void {
+    this.router.navigate(['uploadkot']);
+  }
+
+  openViewAllKot() : void {
+    this.router.navigate(['viewallkot']);
+  }
 }

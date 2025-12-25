@@ -76,27 +76,30 @@ export class TakeorderComponent implements OnInit {
     this.buildForm();
   }
 
-  // -------------------------------------------------------
   // Reactive Form Builders
-  // -------------------------------------------------------
 
   private buildForm(): void {
+    const itemsGroup: { [key: string]: FormGroup } = {};
+
+    this.menuItemsByCategories.forEach(item => {
+      itemsGroup[item.Pm_Id] = this.createItemForm(item);
+    });
+
     this.orderForm = this.fb.group({
-      items: this.fb.array(
-        this.menuItemsByCategories.map(item => this.createItemForm(item))
-      )
+      items: this.fb.group(itemsGroup)
     });
   }
 
+
   private createItemForm(item: any): FormGroup {
     return this.fb.group({
-      Pm_Id: [item.Pm_Id],
-      KotQty: [
-        item.KotQty || '',
-        [Validators.required, Validators.min(1)]
-      ],
-      ItemComment: [item.ItemComment || '']
+      KotQty: [item.KotQty ?? null],
+      ItemComment: [item.ItemComment ?? '']
     });
+  }
+
+  trackByPmId(_: number, item: any): number {
+    return item.Pm_Id;
   }
 
   private applySearch(searchText: string): void {
@@ -107,35 +110,28 @@ export class TakeorderComponent implements OnInit {
     );
   }
 
-  get items(): FormArray {
-    return this.orderForm.get('items') as FormArray;
+  getItemForm(pmid: number): FormGroup {
+    return this.orderForm.get(['items', pmid.toString()]) as FormGroup;
   }
 
-  // -------------------------------------------------------
-  // Action
-  // -------------------------------------------------------
+  addItem(element: any): void {
+    const pmid = element.Pm_Id;
+    const formGroup = this.getItemForm(pmid);
+    const { KotQty, ItemComment } = formGroup.value;
 
-  addItem(index: number, element: any): void {
-    const formGroup = this.items.at(index);
-    // const formValue = this.items.at(index).value;
-    const formValue = formGroup.value;
-
-    if (formValue.KotQty === null || formValue.KotQty === undefined) {
+    if (KotQty === null || KotQty === undefined) {
       this.sweetAlert.show('error', 'Qty Required', 'error');
       return;
     }
 
-    // 1️⃣ Capture pmid BEFORE doing anything else
-    const pmid = element.Pm_Id;
-
-    // Capture previous qty BEFORE doing anything
+    // Capture previous state
     const previousItem = this.orderedItems.find(i => i.Pm_Id === pmid);
     const previousQty = previousItem?.KotQty ?? null;
 
-  
-    if (formValue.KotQty == 0) {
-        // -------- QTY = 0 FLOW --------
-      this.sweetAlert.confirm('Proceed ?', element.Description + ' Will Be Cancelled?')
+    // -------- QTY = 0 FLOW --------
+    if (KotQty == 0) {
+      this.sweetAlert
+        .confirm('Proceed ?', `${element.Description} Will Be Cancelled?`)
         .then(res => {
           if (res.isConfirmed) {
 
@@ -144,87 +140,45 @@ export class TakeorderComponent implements OnInit {
               item => item.Pm_Id !== pmid
             );
 
-            // 🔑 Reset form qty to null
+            // Reset form
             formGroup.patchValue({ KotQty: null });
 
           } else {
-            // 🔑 Restore previous qty
+
+            // Restore previous qty
             formGroup.patchValue({ KotQty: previousQty });
+
           }
-          // Trigger change detection safely
+
           this.orderedItems = [...this.orderedItems];
-          console.log('orderedItems', this.orderedItems);
-          sessionStorage.setItem('ssOrderedItems', JSON.stringify(this.orderedItems));
+          console.log('this.orderedItems after cancel', this.orderedItems)
+          sessionStorage.setItem(
+            'ssOrderedItems',
+            JSON.stringify(this.orderedItems)
+          );
         });
 
       return;
-    } 
-    else {
-      // -------- NORMAL ADD / UPDATE FLOW --------
-      // 2️⃣ Remove ONLY the matching item
-      if (pmid !== undefined && pmid !== null) {
-        this.orderedItems = this.orderedItems.filter(
-          item => item.Pm_Id !== pmid
-        );
-      }
-      this.orderedItems = [...this.orderedItems]
-      const newItem = {
-        ...element,
-        KotQty: formValue.KotQty,
-        ItemComment: formValue.ItemComment
-      };
-      // 5️⃣ Add the new version
-      this.orderedItems.push(newItem);
-      this.orderedItems = [...this.orderedItems];
-      sessionStorage.setItem('ssOrderedItems', JSON.stringify(this.orderedItems));
     }
-    console.log('orderedItems', this.orderedItems);
+
+    // -------- NORMAL ADD / UPDATE FLOW --------
+    // Remove the Pm_Id if already present
+    this.orderedItems = this.orderedItems.filter(
+      item => item.Pm_Id !== pmid
+    );
+
+    this.orderedItems.push({
+      ...element,
+      KotQty,
+      ItemComment
+    });
+
+    this.orderedItems = [...this.orderedItems];
+    console.log('this.orderedItems after Add/ Edit', this.orderedItems)
+    sessionStorage.setItem(
+      'ssOrderedItems',
+      JSON.stringify(this.orderedItems)
+    );
   }
+
 }
-
-// addItem(index: number, element: any): void {
-//   const formValue = this.items.at(index).value;
-//   if (!formValue.KotQty || formValue.KotQty === 0) {
-//     this.sweetAlert.show('error', 'Qty Required', 'error')
-//   }
-
-//   element.KotQty = formValue.KotQty;
-//   element.ItemComment = formValue.ItemComment
-
-//   // console.log('Selected Item:', formValue);
-//   // console.log('Selected element:', element);
-
-//   if (this.orderedItems.length === 0) {
-//     this.orderedItems.unshift(element)
-//   } else {
-
-
-//     this.orderedItems.push(element)
-//   }
-
-//   console.log('this.orderedItems.length', this.orderedItems)
-// }
-
-
-
-
-// if (formValue.KotQty == 0) {
-//   this.sweetAlert.confirm('Proceed ?', '0 Qty Item Will Be Removed?')
-//     .then(res => {
-//       if (res.isConfirmed) {
-//         // 2️⃣ Remove ONLY the matching item
-//         if (pmid !== undefined && pmid !== null) {
-//           this.orderedItems = this.orderedItems.filter(
-//             item => item.Pm_Id !== pmid
-//           );
-//         }
-//         this.orderedItems = [...this.orderedItems]
-//         console.log('After deletion  orderedItems', this.orderedItems);
-//         return;
-//         // this.sweetAlert.show('Confirmed', 'Action executed successfully!', 'success');
-//       } else {
-
-//         return;
-//       }
-//     });
-// } 
