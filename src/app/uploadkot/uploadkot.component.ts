@@ -21,10 +21,16 @@ import { SharedDirectiveModule } from "../SharedDirectivesModule";
 })
 export class UploadkotComponent implements OnInit {
 
-  loginDetails: any;
+  loginName: string;
+  servicedBy: string;
   subscription: Subscription = new Subscription();
 
   orderedItems: any[] = [];
+
+  txtTableNo = new FormControl('');
+
+  txtServicedBy = new FormControl('');
+
 
   constructor(
     private router: Router,
@@ -35,11 +41,11 @@ export class UploadkotComponent implements OnInit {
     private fb: FormBuilder
   ) { }
   ngOnInit(): void {
-    this.loginDetails = JSON.parse(sessionStorage.getItem('ssLoginDetails') || '{}');
-    // this.orderedItems = JSON.parse(sessionStorage.getItem('ssOrderedItems') || '[]');
+    this.loginName = sessionStorage.getItem('ssLoginName') || '';
+    this.servicedBy = sessionStorage.getItem('ssServicedBy') || '';
 
-    console.log('this.orderedItems', this.orderedItems)
-    // this.sweetAlert.show('Success', this.orderedItems.toString(), 'success');
+    console.log('this.this.loginName', this.loginName)
+    console.log('this.this.servicedBy', this.servicedBy)
 
     this.orderedItems = JSON.parse(
       sessionStorage.getItem('ssOrderedItems') || '[]'
@@ -47,6 +53,10 @@ export class UploadkotComponent implements OnInit {
       ...item,
       KotQty: Number(item.KotQty)
     }));
+
+    this.txtServicedBy.setValue(this.servicedBy)
+
+    console.log('this.orderedItems', this.orderedItems)
   }
 
   trackByPmId(_: number, item: any): number {
@@ -129,14 +139,49 @@ export class UploadkotComponent implements OnInit {
       return;
     }
 
-    const payload = this.orderedItems.map(item => ({
-      Pm_Id: item.Pm_Id,
+    const kotDItems = this.orderedItems.map(item => ({
+      PmId: item.Pm_Id,
       KotQty: item.KotQty,
       ItemComment: item.ItemComment ?? ''
     }));
 
-    console.log('Uploading KOT payload', payload);
+    let inputJSON = {
+      TableNo: this.txtTableNo.value,
+      ServicedBy: this.txtServicedBy.value,
+      KoTBy: this.loginName,
+      KotDItems: kotDItems
+    }
 
+    sessionStorage.setItem('ssServicedBy', this.txtServicedBy.value)
+    console.log('inputJson ', inputJSON)
+
+    this.subscription.add(
+      this.homeService.upLoadKot(inputJSON).subscribe({
+        next: (res: any) => {
+          if (res === null) {
+            res = [];
+          }
+          this.orderedItems = [];
+          sessionStorage.removeItem('ssOrderedItems');
+         
+          this.txtTableNo.setValue(null);
+          this.txtServicedBy.setValue(null);
+
+          console.log('res', res)
+          this.sweetAlert.show('Success', res['ReturnMessage'], 'success')
+
+        }, error: (error) => {
+          this.sweetAlert.show('Error', error, "error")
+        }
+      })
+    )
+
+    // console.log('Uploading KOT payload', payload);
+
+    // SET @TableNo = JSON_VALUE(@param, '$.TableNo')
+    // SET @ServicedBy = JSON_VALUE(@param, '$.ServicedBy')
+    // SET @KoTBy = JSON_VALUE(@param, '$.KoTBy')
+    // SET @KotDItems = JSON_QUERY(@param, '$.KotDItems')
     // API call here
   }
 

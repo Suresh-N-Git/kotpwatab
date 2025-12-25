@@ -3,13 +3,26 @@
 </mat-card-title>
 
 <mat-card class="mt-3">
+
     <mat-card-title>Ordered Items</mat-card-title>
+
+
+    <mat-form-field class="w-100">
+        <mat-label>Table No</mat-label>
+        <input matInput type="text" [formControl]="txtTableNo" required/>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Waiter ID</mat-label>
+        <input matInput type="text" [formControl]="txtServicedBy" required/>
+    </mat-form-field>
 
     <div *ngIf="orderedItems.length === 0" class="text-muted">
         No items added
     </div>
 
-    <div class="roundedwithboxshadow"  style="margin-bottom: 10px;" *ngFor="let item of orderedItems; trackBy: trackByPmId">
+    <div class="roundedwithboxshadow" style="margin-bottom: 10px;"
+        *ngFor="let item of orderedItems; trackBy: trackByPmId">
         <!-- Description -->
         <div class="item-desc">
             {{ item.Description }}
@@ -37,7 +50,7 @@
 </mat-card>
 
 <!-- Upload button -->
-<button mat-raised-button color="primary" class="mt-3 w-100" [disabled]="orderedItems.length === 0"
-    (click)="uploadKot()">
+<button mat-raised-button color="primary" class="mt-3 w-100"
+    [disabled]="txtTableNo.invalid || txtServicedBy.invalid || orderedItems.length === 0" (click)="uploadKot()">
     Upload Order
 </button>

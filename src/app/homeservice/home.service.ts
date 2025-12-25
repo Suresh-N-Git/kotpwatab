@@ -167,6 +167,22 @@ export class HomeService {
       }));
   }
 
+   upLoadKot(inputJson: any) {
+    // We use { observe: 'response' } when we want to get the full response inculding headers
+    // Default if you do not use it only the body will be returned in the observer
+  
+    // console.log('getMenuJson ', inputJson)
+    return this.http.post(this.baseURLCommon + 'UploadKotJson', inputJson, { observe: 'response' })
+      .pipe
+      (map(res => {
+        // below is the way to read the header keys, if allowed to be read by settings in the API at server
+        // console.log('res.headers.keys ', res.headers.get('date'));
+        // console.log('res.headers.keys ', res.headers.get('server'));
+        // We need to return only the body where the data is used in the UI
+        return res.body;
+      }));
+  }
+
   changePassword(resultJson: any) {
     return this.http.post(this.baseURLCommon + 'ChangePassword', resultJson).pipe(map(res => {
       return res;

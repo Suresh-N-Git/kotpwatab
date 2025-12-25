@@ -128,7 +128,7 @@ export class LoginComponent {
           next: (response: any) => {
             console.log('response',response)
             sessionStorage.setItem('ssLoginDetails', JSON.stringify(response[0]));
-            sessionStorage.setItem('loginName', this.loginControl['txtLoginName'].value)
+            sessionStorage.setItem('ssLoginName', this.loginControl['txtLoginName'].value)
             // this.sweetAlert.show('Success', 'Valid Login', 'success')
             this.route.navigate(['dashboard']).then(() => {
               this.loginForm.reset();
