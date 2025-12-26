@@ -30,8 +30,6 @@ export class DashboardComponent implements OnInit {
   private lastBack = 0;
   private exitDelay = 2000; // 2 seconds
 
-
-
   constructor(
     private router: Router,
     private location: Location,
@@ -49,7 +47,7 @@ export class DashboardComponent implements OnInit {
     this.menuItemsAll = JSON.parse(sessionStorage.getItem('ssMenuItems'));
 
     if (!this.menuItemsAll) {
-      this.getDashboardDetails();
+      this.getMenuItems();
     } else {
       this.menuItemsAll = JSON.parse(sessionStorage.getItem('ssMenuItems'));
       this.menuCategories = [...new Set(this.menuItemsAll.map(item => item.Category))];
@@ -59,7 +57,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  getDashboardDetails(): void {
+  getMenuItems(): void {
 
     let inputJSON =
     {
@@ -99,7 +97,7 @@ export class DashboardComponent implements OnInit {
 
     const orderedItems = JSON.parse(sessionStorage.getItem('ssOrderedItems') || '[]');
 
-    console.log('orderedItems' , orderedItems)
+    console.log('orderedItems', orderedItems)
     if (orderedItems.length === 0) {
       this.sweetAlert.show('error', 'No KoT Items To Upload', 'error');
     } else {
@@ -111,5 +109,14 @@ export class DashboardComponent implements OnInit {
 
   openViewAllKot(): void {
     this.router.navigate(['viewallkot']);
+  }
+
+  downloadItems(): void {
+
+  }
+
+
+  viewKot(): void {
+
   }
 }

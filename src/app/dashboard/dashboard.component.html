@@ -1,22 +1,46 @@
-<mat-card-title class="roundedwithboxshadow" style="margin-top: 20px; margin-bottom: 20px; font-size: large; text-align: center;">
+<mat-card-title class="card-title">
+    <span>Ezy KoT</span>
+
+    <!-- 3-dot menu button -->
+    <button mat-icon-button [matMenuTriggerFor]="kotMenu" aria-label="More options">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</mat-card-title>
+
+<!-- Menu -->
+<mat-menu #kotMenu="matMenu">
+    <button mat-menu-item (click)="getMenuItems()">
+        <mat-icon>download</mat-icon>
+        <span>Download Items</span>
+    </button>
+
+     <button mat-menu-item (click)="openViewAllKot()">
+        <mat-icon>view_list</mat-icon>
+        <span>View Open Kot </span>
+    </button>
+ 
+</mat-menu>
+
+<mat-card-title class="roundedwithboxshadow"
+    style="margin-top: 20px; margin-bottom: 20px; font-size: large; text-align: center;">
     Categories
 </mat-card-title>
 <div class="row w-100" *ngIf="showCategories">
     <div class="col-sm-12" *ngFor="let element of menuCategories">
-        <mat-card class="roundedwithboxshadow" >
-                <div class="button-row">
-                    <button mat-raised-button color="accent" (click)="selectedCategory(element)">
-                       {{ element }}
-                    </button>
-                </div>     
+        <mat-card class="roundedwithboxshadow">
+            <div class="button-row">
+                <button mat-raised-button color="accent" (click)="selectedCategory(element)">
+                    {{ element }}
+                </button>
+            </div>
         </mat-card>
     </div>
-    <button class="btn btn-primary upload-kot-btn" (click)="openUploadKot()" >
-      ↑ K
+    <button class="btn btn-primary upload-kot-btn" (click)="openUploadKot()">
+        ↑ K
     </button>
-     <button class="btn btn-primary view-kot-btn" (click)="openViewAllKot()">
-      ↑ V
-    </button>
+    <!-- <button class="btn btn-primary view-kot-btn" (click)="openViewAllKot()">
+        ↑ V
+    </button> -->
 </div>
 
 

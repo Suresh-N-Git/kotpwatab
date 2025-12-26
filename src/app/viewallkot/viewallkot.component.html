@@ -1,1 +1,60 @@
-<p>viewallkot works!</p>
+<mat-card-title class="row w-100 title" style="margin-top: 20px; padding-left: 20px;">
+    Open KoTs
+</mat-card-title>
+
+<div class="row w-100">
+
+    <div class="col-12 mb-3" *ngFor="let kot of openKots">
+
+        <mat-card class="roundedwithboxshadow">
+
+            <!-- Card Header -->
+            <mat-card-title class="d-flex justify-content-between align-items-center">
+                <span>Table {{ kot['Table'] }}</span>
+                <span class="text-muted" style="font-size: 14px;">
+                    KOT #{{ kot['Kot No'] }}
+                </span>
+            </mat-card-title>
+
+            <mat-card-subtitle class="mb-2">
+                Serviced By: <strong>{{ kot['ServicedBy'] }}</strong>
+            </mat-card-subtitle>
+
+            <mat-divider></mat-divider>
+
+            <!-- Items List -->
+            <div class="mt-2">
+
+                <div class="d-flex justify-content-between align-items-center py-2" *ngFor="let item of kot.KotItems">
+
+                    <div class="d-flex justify-content-between align-items-center py-1 w-100 pe-3">
+
+                        <!-- Left: SlNo + Description -->
+                        <div class="d-flex align-items-center">
+
+                            <span class="text-muted me-2" style="font-size: 12px;">
+                                {{ item.SlNo }})
+                            </span>
+
+                            <span class="fw-bold">
+                                {{ item.PartDescription }}
+                            </span>
+
+                        </div>
+
+                        <!-- Right: Qty -->
+                        <span class="fw-bold">
+                            {{ item.Qty }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </mat-card>
+
+    </div>
+
+</div>
