@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SharedMaterialModule } from '../SharedMaterialModule';
 import { SharedDirectiveModule } from '../SharedDirectivesModule';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -18,7 +18,7 @@ import { SweetalertService } from '../sweetalert/sweetalert.service';
 })
 
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   changeForm: FormGroup;
   showPassword = false; // toggle state

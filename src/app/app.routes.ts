@@ -11,10 +11,8 @@ export const routes: Routes = [
   { path: 'takeorder', component: TakeorderComponent },
   { path: 'uploadkot', component: UploadkotComponent },
   { path: 'viewallkot', component: ViewallkotComponent },
-  //  { path: '', pathMatch: 'full', redirectTo: 'login' },
+
   { path: '**', redirectTo: 'login' }
   // Any invalid which the user tries to access through URL will be sent here.
-  // Any route where the user has no rights will be handled in the app-routing.module and sent to same page
-  // { path: '**', component: PageNotFoundComponent }
 ];
 

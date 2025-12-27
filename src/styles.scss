@@ -31,3 +31,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     text-align: center;
     background-color: lightgreen;
 }
+
+
+.back-title {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: large;
+  color: #fff;
+  background-color: blueviolet;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;   /* spacing between back button and title */
+}

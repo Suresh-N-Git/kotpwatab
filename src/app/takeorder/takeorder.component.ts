@@ -32,6 +32,7 @@ export class TakeorderComponent implements OnInit {
   subscription: Subscription = new Subscription();
   serverDate: any;
 
+  loginName: string;
   orderedItems: any[] = [];
   // 🔹 Reactive form root
   orderForm!: FormGroup;
@@ -49,9 +50,11 @@ export class TakeorderComponent implements OnInit {
   ngOnInit(): void {
 
     const state = history.state;
+
     this.selCategory = state?.catetgory ?? '';
 
     this.loginDetails = JSON.parse(sessionStorage.getItem('ssLoginDetails') || '{}');
+    this.loginName = sessionStorage.getItem('ssLoginName') || '';
 
     const isoSystemDate = this.loginDetails.SystemDate
       ? new Date(this.loginDetails.SystemDate)
@@ -62,8 +65,13 @@ export class TakeorderComponent implements OnInit {
 
     this.menuItemsAll = JSON.parse(sessionStorage.getItem('ssMenuItems') || '[]');
 
-    this.menuItemsByCategories =
-      this.menuItemsAll.filter(item => item.Category === this.selCategory);
+    if (this.selCategory != 'All Categories') {
+      this.menuItemsByCategories =
+        this.menuItemsAll.filter(item => item.Category === this.selCategory);
+    }
+    else {
+      this.menuItemsByCategories = [...this.menuItemsAll]
+    }
 
     // 🔹 Initial filtered list
     this.filteredMenuItems = [...this.menuItemsByCategories];
@@ -180,6 +188,10 @@ export class TakeorderComponent implements OnInit {
       'ssOrderedItems',
       JSON.stringify(this.orderedItems)
     );
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard']);
   }
 
 }

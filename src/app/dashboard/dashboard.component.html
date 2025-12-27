@@ -1,5 +1,5 @@
 <mat-card-title class="card-title">
-    <span>Ezy KoT</span>
+    <span>Ezy KoT </span>
 
     <!-- 3-dot menu button -->
     <button mat-icon-button [matMenuTriggerFor]="kotMenu" aria-label="More options">
@@ -14,17 +14,20 @@
         <span>Download Items</span>
     </button>
 
-     <button mat-menu-item (click)="openViewAllKot()">
+    <button mat-menu-item (click)="openViewAllKot()">
         <mat-icon>view_list</mat-icon>
         <span>View Open Kot </span>
     </button>
- 
+
 </mat-menu>
 
 <mat-card-title class="roundedwithboxshadow"
-    style="margin-top: 20px; margin-bottom: 20px; font-size: large; text-align: center;">
-    Categories
+    style="margin-top: 20px; margin-bottom: 20px; font-size: large; text-align: center;" (click)="allCatgoriesClick()"
+    role="button" tabindex="0">
+    All Categories
 </mat-card-title>
+
+
 <div class="row w-100" *ngIf="showCategories">
     <div class="col-sm-12" *ngFor="let element of menuCategories">
         <mat-card class="roundedwithboxshadow">

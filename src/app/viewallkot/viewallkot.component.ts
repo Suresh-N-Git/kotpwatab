@@ -19,117 +19,60 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class ViewallkotComponent implements OnInit {
 
+  subscription: Subscription = new Subscription();
 
   openKots: any[] = [];
+  loginName: string;
+
+  constructor(
+    private router: Router,
+    private location: Location,
+    private homeService: HomeService,
+    private sweetAlert: SweetalertService,
+    private snackBar: MatSnackBar,
+
+  ) { }
 
   ngOnInit(): void {
-    this.openKots = [
-      {
-        "Kot No": 100804,
-        "Table": "44",
-        "ServicedBy": "hhhhh",
-        "KotItems": [
-          {
-            "SlNo": 1,
-            "PartDescription": "Bejois Brandy 1000Ml",
-            "Qty": 1
-          }
-        ]
-      },
-      {
-        "Kot No": 100805,
-        "Table": "666",
-        "ServicedBy": "yyyy",
-        "KotItems": [
-          {
-            "SlNo": 1,
-            "PartDescription": "Bejois Brandy 1000Ml",
-            "Qty": 1
-          },
-          {
-            "SlNo": 2,
-            "PartDescription": "Amstel Strong 650Ml",
-            "Qty": 2
-          },
-          {
-            "SlNo": 3,
-            "PartDescription": "Becks Beer 500Ml",
-            "Qty": 2
-          }
-        ]
-      },
-      {
-        "Kot No": 100808,
-        "Table": "Bbb",
-        "ServicedBy": "Dd",
-        "KotItems": [
-          {
-            "SlNo": 1,
-            "PartDescription": "Andra Chilly Chicken",
-            "Qty": 1
-          },
-          {
-            "SlNo": 2,
-            "PartDescription": "Babycorn Manchurian",
-            "Qty": 2
-          }
-        ]
-      },
-      {
-        "Kot No": 100811,
-        "Table": "ddd",
-        "ServicedBy": "ddd",
-        "KotItems": [
-          {
-            "SlNo": 1,
-            "PartDescription": "100 Pipers 12 Years Whisky 750Ml",
-            "Qty": 1
-          }
-        ]
-      },
-      {
-        "Kot No": 100812,
-        "Table": "ff",
-        "ServicedBy": "ddd",
-        "KotItems": [
-          {
-            "SlNo": 1,
-            "PartDescription": "Becks Beer 500Ml",
-            "Qty": 1
-          }
-        ]
-      },
-      {
-        "Kot No": 100807,
-        "Table": "kestrel",
-        "ServicedBy": "Suresh",
-        "KotItems": [
-          {
-            "SlNo": 1,
-            "PartDescription": "Amstel Strong 650Ml",
-            "Qty": 1
-          }
-        ]
-      },
-      {
-        "Kot No": 100806,
-        "Table": "T1",
-        "ServicedBy": "zzzz",
-        "KotItems": [
-          {
-            "SlNo": 1,
-            "PartDescription": "Bangalore Gin 180Ml",
-            "Qty": 1
-          },
-          {
-            "SlNo": 2,
-            "PartDescription": "Amruth Rum 180Ml",
-            "Qty": 1
-          }
-        ]
-      }
-    ]
-
-
+    
+    
+    this.getMenuItems();
   }
+
+
+  getMenuItems(): void {
+
+    let inputJSON =
+    {
+      "FromApi": "OpenKotsPWA",
+      "KoTBy": sessionStorage.getItem('ssLoginName') || ''
+    };
+    console.log('inputJSON', inputJSON)
+    this.subscription.add(
+      this.homeService.openKotsPWA(inputJSON).subscribe({
+        next: (res: any) => {
+          if (res === null) {
+            res = [];
+
+          }
+          console.log("res" , res)
+          this.loginName = sessionStorage.getItem('ssLoginName') || '';
+          this.openKots = res;
+
+          if (this.openKots.length == 0) {
+
+            this.sweetAlert.show('Info', "No Open KoTs", "info")
+          }
+        }, error: (error) => {
+          this.sweetAlert.show('Error', error, "error")
+        }
+      })
+    )
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+
 }

@@ -175,33 +175,10 @@ export class UploadkotComponent implements OnInit {
         }
       })
     )
-
-    // console.log('Uploading KOT payload', payload);
-
-    // SET @TableNo = JSON_VALUE(@param, '$.TableNo')
-    // SET @ServicedBy = JSON_VALUE(@param, '$.ServicedBy')
-    // SET @KoTBy = JSON_VALUE(@param, '$.KoTBy')
-    // SET @KotDItems = JSON_QUERY(@param, '$.KotDItems')
-    // API call here
   }
 
-  // uploadOrder(): void {
-  //   if (this.orderedItems.length === 0) {
-  //     this.sweetAlert.show('Error', 'No items to upload', 'error');
-  //     return;
-  //   }
-
-  //   const payload = this.orderedItems.map(
-  //     ({ Pm_Id, KotQty, ItemComment }) => ({
-  //       Pm_Id,
-  //       KotQty,
-  //       ItemComment
-  //     })
-  //   );
-
-  //   console.log('Uploading payload', payload);
-
-  //   // call API here
-  // }
+  goBack(): void {
+    this.router.navigate(['/dashboard']);
+  }
 
 }

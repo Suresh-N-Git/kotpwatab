@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
   subscription: Subscription = new Subscription();
   serverDate: any;
   showCategories: boolean = false;
-
+  loginName: string;
 
   private lastBack = 0;
   private exitDelay = 2000; // 2 seconds
@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
 
     this.loginDetails = JSON.parse(sessionStorage.getItem('ssLoginDetails'));
+    this.loginName = sessionStorage.getItem('ssLoginName') || '';
     console.log('this.loginDetails ', this.loginDetails)
     let isoSystemDate = (this.loginDetails.SystemDate) ? new Date(this.loginDetails.SystemDate) : new Date();
     this.serverDate = ISODateToyyyyMMdd(isoSystemDate);
@@ -88,6 +89,10 @@ export class DashboardComponent implements OnInit {
   }
 
 
+  allCatgoriesClick() : void {
+     this.router.navigate(['takeorder'], { state: { catetgory: "All Categories" } });
+  }
+
   selectedCategory(element): void {
     console.log('element'), element
     this.router.navigate(['takeorder'], { state: { catetgory: element } });
@@ -103,20 +108,10 @@ export class DashboardComponent implements OnInit {
     } else {
       this.router.navigate(['uploadkot']);
     }
-
-
   }
 
   openViewAllKot(): void {
     this.router.navigate(['viewallkot']);
   }
 
-  downloadItems(): void {
-
-  }
-
-
-  viewKot(): void {
-
-  }
 }
